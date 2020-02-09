@@ -1,6 +1,7 @@
 package elligen
 
 import (
+	"fmt"
 	"math/rand"
 	"strings"
 )
@@ -40,6 +41,42 @@ func WithOptions(options ...DefaultGeneratorOption) DefaultGeneratorOption {
 					return err
 				}
 			}
+			return nil
+		},
+	)
+}
+
+func WithConsonants(consonants []string) DefaultGeneratorOption {
+	return defaultGeneratorOptionFunc(
+		func(generator *defaultGenerator) error {
+			if len(consonants) == 0 {
+				return fmt.Errorf("list of consonants is empty")
+			}
+			generator.consonants = consonants
+			return nil
+		},
+	)
+}
+
+func WithVowels(vowels []string) DefaultGeneratorOption {
+	return defaultGeneratorOptionFunc(
+		func(generator *defaultGenerator) error {
+			if len(vowels) == 0 {
+				return fmt.Errorf("list of vowels is empty")
+			}
+			generator.vowels = vowels
+			return nil
+		},
+	)
+}
+
+func WithEndings(endings []string) DefaultGeneratorOption {
+	return defaultGeneratorOptionFunc(
+		func(generator *defaultGenerator) error {
+			if len(endings) == 0 {
+				return fmt.Errorf("list of endings is empty")
+			}
+			generator.endings = endings
 			return nil
 		},
 	)
