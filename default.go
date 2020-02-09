@@ -8,7 +8,7 @@ import (
 
 func DefaultGenerator(options ...DefaultGeneratorOption) (Generator, error) {
 	generator := &defaultGenerator{
-		r:          randomIntnFunc(rand.Intn),
+		r:          RandomIntnFunc(rand.Intn),
 		consonants: consonants,
 		vowels:     vowels,
 		endings:    endings,
@@ -82,6 +82,18 @@ func WithEndings(endings []string) DefaultGeneratorOption {
 	)
 }
 
+func WithRandomIntn(r RandomIntn) DefaultGeneratorOption {
+	return defaultGeneratorOptionFunc(
+		func(generator *defaultGenerator) error {
+			if r == nil {
+				return fmt.Errorf("source of randomness must not be nil")
+			}
+			generator.r = r
+			return nil
+		},
+	)
+}
+
 var consonants = []string{
 	"b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "z",
 }
@@ -95,7 +107,7 @@ var endings = []string{
 }
 
 type defaultGenerator struct {
-	r randomIntn
+	r RandomIntn
 
 	consonants []string
 	vowels     []string
@@ -143,16 +155,20 @@ func (generator *defaultGenerator) Generate() string {
 	return builder.String()
 }
 
-func generateDefaultPart(r randomIntn, first, second []string) defaultGeneratorPart {
+func generateDefaultPart(r RandomIntn, first, second []string) defaultGeneratorPart {
 	return defaultGeneratorPart(first[r.Intn(len(first))] + second[r.Intn(len(second))])
 }
 
-type randomIntn interface {
+// RandomIntn is the source of randomness used by the default generator.
+type RandomIntn interface {
 	Intn(n int) int
 }
 
-type randomIntnFunc func(n int) int
+// RandomIntnFunc is a convenience wrapper so rand.Intn (and the like) can
+// be used as RandomIntn easier.
+type RandomIntnFunc func(n int) int
 
-func (f randomIntnFunc) Intn(n int) int {
+// Intn just calls f and returns the result.
+func (f RandomIntnFunc) Intn(n int) int {
 	return f(n)
 }
