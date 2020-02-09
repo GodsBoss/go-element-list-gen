@@ -97,17 +97,35 @@ func WithRandomIntn(r RandomIntn) DefaultGeneratorOption {
 	)
 }
 
-var consonants = []string{
-	"b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "z",
+// DefaultConsonants lists the consonants used by the DefaultGenerator by
+// default. The list returned can be modified safely.
+func DefaultConsonants() []string {
+	return []string{
+		"b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "z",
+	}
 }
 
-var vowels = []string{
-	"a", "e", "i", "o", "u", "y",
+var consonants = DefaultConsonants()
+
+// DefaultVowels lists the vowels used by the DefaultGenerator by default. The
+// list returned can be modified safely.
+func DefaultVowels() []string {
+	return []string{
+		"a", "e", "i", "o", "u", "y",
+	}
 }
 
-var endings = []string{
-	"alt", "en", "ese", "ic", "ine", "ium", "on", "um", "us",
+var vowels = DefaultVowels()
+
+// DefaultEndings lists the endings used by the DefaultGenerator by default.
+// The list returned can be modified safely.
+func DefaultEndings() []string {
+	return []string{
+		"alt", "en", "ese", "ic", "ine", "ium", "on", "um", "us",
+	}
 }
+
+var endings = DefaultEndings()
 
 type defaultGenerator struct {
 	r RandomIntn
