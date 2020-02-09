@@ -26,12 +26,18 @@ func run(args []string) error {
 	vowels := fs.String("vowels", "", "Comma-separated list of vowels. A default list is used if this is empty.")
 	endings := fs.String("endings", "", "Comma-separated list of endings. A default list is used if this is empty.")
 
+	minParts := fs.Int("minimum-parts", 2, "Minimal amount of parts.")
+	maxAddParts := fs.Int("maximum-additional-parts", 2, "Maximum amount of additional parts.")
+
 	err := fs.Parse(args)
 	if err != nil {
 		return err
 	}
 
-	options := make([]elligen.DefaultGeneratorOption, 0)
+	options := []elligen.DefaultGeneratorOption{
+		elligen.WithMinimumParts(*minParts),
+		elligen.WithMaximumAdditionalParts(*maxAddParts),
+	}
 
 	if len(*consonants) > 0 {
 		options = append(options, elligen.WithConsonants(strings.Split(*consonants, ",")))

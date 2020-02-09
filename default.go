@@ -9,9 +9,11 @@ import (
 
 func DefaultGenerator(options ...DefaultGeneratorOption) (Generator, error) {
 	generator := &defaultGenerator{
-		consonants: consonants,
-		vowels:     vowels,
-		endings:    endings,
+		consonants:         consonants,
+		vowels:             vowels,
+		endings:            endings,
+		minParts:           2,
+		maxAdditionalParts: 2,
 	}
 	for i := range options {
 		err := options[i].configure(generator)
@@ -97,6 +99,30 @@ func WithRandomIntn(r RandomIntn) DefaultGeneratorOption {
 	)
 }
 
+func WithMinimumParts(min int) DefaultGeneratorOption {
+	return defaultGeneratorOptionFunc(
+		func(generator *defaultGenerator) error {
+			if min < 0 {
+				return fmt.Errorf("minimum parts must be >= 0, but got %d", min)
+			}
+			generator.minParts = min
+			return nil
+		},
+	)
+}
+
+func WithMaximumAdditionalParts(max int) DefaultGeneratorOption {
+	return defaultGeneratorOptionFunc(
+		func(generator *defaultGenerator) error {
+			if max < 0 {
+				return fmt.Errorf("maximum additional parts must be >= 0, but got %d", max)
+			}
+			generator.maxAdditionalParts = max
+			return nil
+		},
+	)
+}
+
 // DefaultConsonants lists the consonants used by the DefaultGenerator by
 // default. The list returned can be modified safely.
 func DefaultConsonants() []string {
@@ -133,6 +159,9 @@ type defaultGenerator struct {
 	consonants []string
 	vowels     []string
 	endings    []string
+
+	minParts           int
+	maxAdditionalParts int
 }
 
 type defaultGeneratorPart string
@@ -151,7 +180,7 @@ func (part defaultGeneratorPart) endsWithOneOf(list []string) bool {
 }
 
 func (generator *defaultGenerator) Generate() string {
-	partCount := generator.r.Intn(3) + 2 // 2 to 4
+	partCount := generator.r.Intn(generator.maxAdditionalParts+1) + generator.minParts
 	parts := make([]defaultGeneratorPart, partCount)
 	if generator.r.Intn(2) == 0 {
 		parts[0] = generateDefaultPart(generator.r, generator.consonants, generator.vowels)
