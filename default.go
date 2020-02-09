@@ -102,8 +102,8 @@ func WithRandomIntn(r RandomIntn) DefaultGeneratorOption {
 func WithMinimumParts(min int) DefaultGeneratorOption {
 	return defaultGeneratorOptionFunc(
 		func(generator *defaultGenerator) error {
-			if min < 0 {
-				return fmt.Errorf("minimum parts must be >= 0, but got %d", min)
+			if min < 1 {
+				return fmt.Errorf("minimum parts must be >= 1, but got %d", min)
 			}
 			generator.minParts = min
 			return nil
