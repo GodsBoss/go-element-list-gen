@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/GodsBoss/elligen"
+	elligen "github.com/GodsBoss/go-element-list-gen"
 )
 
 func main() {

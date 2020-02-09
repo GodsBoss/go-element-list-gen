@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/GodsBoss/elligen"
+	elligen "github.com/GodsBoss/go-element-list-gen"
 )
 
 func TestGenerateNegativeCount(t *testing.T) {
