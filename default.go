@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
+	"time"
 )
 
 func DefaultGenerator(options ...DefaultGeneratorOption) (Generator, error) {
 	generator := &defaultGenerator{
-		r:          RandomIntnFunc(rand.Intn),
 		consonants: consonants,
 		vowels:     vowels,
 		endings:    endings,
@@ -18,6 +18,9 @@ func DefaultGenerator(options ...DefaultGeneratorOption) (Generator, error) {
 		if err != nil {
 			return nil, err
 		}
+	}
+	if generator.r == nil {
+		generator.r = rand.New(rand.NewSource(time.Now().Unix()))
 	}
 	return generator, nil
 }
