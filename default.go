@@ -25,6 +25,26 @@ type DefaultGeneratorOption interface {
 	configure(*defaultGenerator) error
 }
 
+type defaultGeneratorOptionFunc func(*defaultGenerator) error
+
+func (f defaultGeneratorOptionFunc) configure(generator *defaultGenerator) error {
+	return f(generator)
+}
+
+// WithOptions takes a bunch of options and combines them into a single option.
+func WithOptions(options ...DefaultGeneratorOption) DefaultGeneratorOption {
+	return defaultGeneratorOptionFunc(
+		func(generator *defaultGenerator) error {
+			for i := range options {
+				if err := options[i].configure(generator); err != nil {
+					return err
+				}
+			}
+			return nil
+		},
+	)
+}
+
 var consonants = []string{
 	"b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "z",
 }
